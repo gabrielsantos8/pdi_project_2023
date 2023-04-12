@@ -4,8 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Cow;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use Nette\Utils\Floats;
 
 class CowFactory extends Factory
 {
