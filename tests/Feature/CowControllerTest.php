@@ -7,6 +7,7 @@ use App\Models\CowSituation;
 use Database\Factories\CowFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 // use Illuminate\Database\Eloquent\Factorie
 
@@ -74,6 +75,18 @@ class CowControllerTest extends TestCase
         });
         $situation->delete();
         $cow->delete();
+    }
+
+    public function test_shouldStoreCowData()
+    {
+        $this->post("/cows/", $this->cowData);
+
+        $this->assertDatabaseHas('cows', $this->cowData);
+
+        $cows = DB::table('cows')->where($this->cowData)->get();
+        foreach ($cows as $cow) {
+            DB::table('cows')->delete($cow->id);
+        }
     }
 
     public function test_shouldUpdateCowData()
