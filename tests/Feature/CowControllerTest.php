@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\CowController;
 use App\Models\Cow;
 use App\Models\CowSituation;
 use Database\Factories\CowFactory;
+use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
@@ -108,5 +110,33 @@ class CowControllerTest extends TestCase
         $this->delete("/cows/" . $cow->id);
 
         $this->assertDatabaseMissing('cows', $cow->toArray());
+    }
+
+
+
+    /**
+     * @dataProvider valueProviderPeriods
+     */
+    public function test_shouldReturnDatesWithTheirSpecificPeriodsAdded($valueOrigin, $value, $expectedResult)
+    {
+        $cow = Cow::factory()->create();
+        $cow->nascimento = $cow->nascimento->format('Y-m-d');
+        $cow->dataprimeiracria = $cow->dataprimeiracria->format('Y-m-d');
+        $cow->ultimacria = $cow->ultimacria->format('Y-m-d');
+        $cowController = new CowController;
+        $newCow = $cowController->trataDatas($cow);
+        $dataOrigin = new DateTime($newCow->$valueOrigin);
+        $dataPrev = new DateTime($newCow->$value);
+        $intervalo = $dataPrev->diff($dataOrigin)->days;
+
+        $this->assertEquals($expectedResult, $intervalo);
+    }
+
+    public function valueProviderPeriods()
+    {
+        return [
+            "periodWean" => ['valueOrigin' => 'ultimacria', 'value' => 'previsaodesmama', 'expectedResult' => 205],
+            "periodProcreate" => ['valueOrigin' => 'previsaocio', 'value' => 'previsaocria', 'expectedResult' => 290]
+        ];
     }
 }

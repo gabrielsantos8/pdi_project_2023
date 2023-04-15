@@ -125,15 +125,17 @@ class CowController extends Controller
         $periodoDesmama = new DateInterval('P' . DIAS_DESMAMA . 'D');
         $periodoCria = new DateInterval('P' . DIAS_CRIA . 'D');
 
-        $previsaoDesmama = $dataUltimaCria->add($periodoDesmama)->format('d/m/Y');
+        $previsaoDesmama = $dataUltimaCria->add($periodoDesmama)->format('Y-m-d');
         $previsaoCio = $dataUltimaCria->add($periodoCio);
-        $previsaoCria = $previsaoCio->add($periodoCria)->format('d/m/Y');
+        $prevCio = $previsaoCio->format('Y-m-d');
+        $previsaoCria = $previsaoCio->add($periodoCria)->format('Y-m-d');
 
         $cow->previsaodesmama = $previsaoDesmama;
         $cow->previsaocria = $previsaoCria;
-        $cow->dataprimeiracria = $dataPrimeiraCria->format('d/m/Y');
-        $cow->ultimacria = $dataUltimaCriaOriginal->format('d/m/Y');
-        $cow->nascimento = $dataNascimento->format('d/m/Y');
+        $cow->previsaocio = $prevCio;
+        $cow->dataprimeiracria = $dataPrimeiraCria->format('Y-m-d');
+        $cow->ultimacria = $dataUltimaCriaOriginal->format('Y-m-d');
+        $cow->nascimento = $dataNascimento->format('Y-m-d');
 
 
         return $cow;
