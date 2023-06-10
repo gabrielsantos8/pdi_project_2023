@@ -57,7 +57,7 @@ class CowControllerTest extends TestCase
     {
         $situation = CowSituation::factory()->create(); //cria um registro baseado na Factory
         $response = $this->get('/cows/create');  //chama a rota
-        //statuscode deve ser 200   //view deve ser index      //deve conter um registro model no retorno dessa view  
+        //statuscode deve ser 200   //view deve ser create      //deve conter um registro da model situation no retorno dessa view  
         $response->assertStatus(200)->assertViewIs('cows.create')->assertViewHas('situacoes', function ($situations) use ($situation) {
             return $situations->contains($situation);
         });
@@ -120,11 +120,15 @@ class CowControllerTest extends TestCase
     public function test_shouldReturnDatesWithTheirSpecificPeriodsAdded($valueOrigin, $value, $expectedResult)
     {
         $cow = Cow::factory()->create();
+
         $cow->nascimento = $cow->nascimento->format('Y-m-d');
         $cow->dataprimeiracria = $cow->dataprimeiracria->format('Y-m-d');
         $cow->ultimacria = $cow->ultimacria->format('Y-m-d');
+
         $cowController = new CowController;
+
         $newCow = $cowController->trataDatas($cow);
+
         $dataOrigin = new DateTime($newCow->$valueOrigin);
         $dataPrev = new DateTime($newCow->$value);
         $intervalo = $dataPrev->diff($dataOrigin)->days;
